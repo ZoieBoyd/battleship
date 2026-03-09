@@ -1,0 +1,23 @@
+{
+  "name": "battleship",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZoieBoyd/battleship.git"
+  },
+  "author": "Zoie Boyd",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZoieBoyd/battleship/issues"
+  },
+  "homepage": "https://github.com/ZoieBoyd/battleship#readme",
+  "devDependencies": {
+    "@babel/preset-env": "^7.29.0",
+    "jest": "^30.2.0"
+  }
+}
