@@ -1,0 +1,95 @@
+@font-face {
+    font-family: "ITC Machine Std";
+    src:
+        url("./fonts/MachineStd-Bold.woff2") format("woff2"),
+        url("./fonts/MachineStd-Bold.woff") format("woff"),
+        url("./fonts/MachineStd-Bold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Orbitron";
+    src:
+        url("./fonts/Orbitron-Regular.woff2") format("woff2"),
+        url("./fonts/Orbitron-Regular.woff") format("woff"),
+        url("./fonts/Orbitron-Regular.ttf") format("truetype");
+}
+
+:root {
+    --red: #b20d30ff;
+    --blue: #40607bff;
+    --navy: #252b37ff;
+    --grey: #939393ff;
+    --white: #fbfeecff;
+}
+
+body {
+    max-width: 100vw;
+    max-height: 100vh;
+    background-color: var(--navy);
+    display: grid;
+    justify-content: center;
+    text-align: center;
+}
+
+header {
+    font-family: "ITC Machine Std", Impact, sans-serif;
+    font-size: 3rem;
+    color: var(--red);
+    -webkit-text-stroke: 2.5px var(--white);
+}
+
+main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+        "player-header cpu-header"
+        "player-gameboard cpu-gameboard";
+    column-gap: 7rem;
+    font-family: "Orbitron", serif;
+    font-size: 1.3rem;
+    letter-spacing: 1.5px;
+    color: var(--white);
+    background-color: var(--blue);
+    padding: 3rem 5rem;
+}
+
+.gameboard {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 2px;
+    background-color: var(--white);
+    margin: 0.5rem;
+    border: 2px solid var(--white);
+}
+
+.cell {
+    width: 3rem;
+    height: 3rem;
+    border: none;
+    background-color: var(--grey);
+}
+
+#player-header {
+    grid-area: player-header;
+}
+
+#player-gameboard {
+    grid-area: player-gameboard;
+}
+
+#cpu-header {
+    grid-area: cpu-header;
+}
+
+#cpu-gameboard {
+    grid-area: cpu-gameboard;
+}
+
+h1 {
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+}
+
+h2 {
+    margin-top: 0;
+}
