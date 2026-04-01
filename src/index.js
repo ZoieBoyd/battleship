@@ -1,8 +1,20 @@
 import "./styles.css";
-import { createGameBoard } from "./modules/dom";
+import { loadGameScreen, loadSetupScreen, createGameBoard } from "./modules/dom";
+import { playGame } from "./modules/gameController.";
 
-createGameBoard("player-gameboard");
-createGameBoard("cpu-gameboard");
+playGame();
+// loadGameScreen();
+//loadSetupScreen();
+
+/*
+const player = new Player();
+const enemy = new Player();
+*/
+//player.gameboard.placeShip(player.gameboard.ships[0], 0, 0, "horizontal");
+
+//createGameBoard("setup-gameboard", true);
+//createGameBoard("player-gameboard", false);
+//createGameBoard("cpu-gameboard");
 /*
 import { Gameboard } from "./modules/gameboard.js";
 import { Ship } from "./modules/ship.js";

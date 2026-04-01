@@ -4,6 +4,15 @@ export class Gameboard {
     constructor() {
         this.size = 10;
         this.board = new Array(this.size).fill(null).map(() => new Array(this.size).fill(null));
+        this.ships = [
+            new Ship(5, "carrier"),
+            new Ship(4, "battleship"),
+            new Ship(3, "destoyer"),
+            new Ship(3, "submarine"),
+            new Ship(2, "patrol boat"),
+        ];
+        this.hits = new Array();
+        this.misses = new Array();
     }
 
     placeShip(ship, x, y, direction) {
@@ -40,6 +49,21 @@ export class Gameboard {
         });
     }
 
+    placeRandomFleet() {
+        this.ships.forEach((ship) => {
+            let placed = false;
+            while (!placed) {
+                const x = Math.floor(Math.random() * 10);
+                const y = Math.floor(Math.random() * 10);
+                const direction = Math.random() < 0.5 ? "horizontal" : "vertical";
+                try {
+                    this.placeShip(ship, x, y, direction);
+                    placed = true;
+                } catch (error) {}
+            }
+        });
+    }
+
     isOutOfBounds(length, axis) {
         return axis + (length - 1) >= this.size;
     }
@@ -51,12 +75,17 @@ export class Gameboard {
     receiveAttack(x, y) {
         if (this.isHit(x, y)) {
             this.board[x][y].hit();
+            this.hits.push([x, y]);
         } else {
-            this.board[x][y] = ".";
+            this.misses.push([x, y]);
         }
     }
 
     isHit(x, y) {
-        return this.board[x][y] instanceof Ship;
+        return this.board[x][y] != null;
+    }
+
+    isAllSunk() {
+        return this.ships.every((ship) => ship.isSunk());
     }
 }
