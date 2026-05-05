@@ -7,7 +7,7 @@ export class Gameboard {
         this.ships = [
             new Ship(5, "carrier"),
             new Ship(4, "battleship"),
-            new Ship(3, "destoyer"),
+            new Ship(3, "destroyer"),
             new Ship(3, "submarine"),
             new Ship(2, "patrol boat"),
         ];
@@ -53,15 +53,20 @@ export class Gameboard {
         this.ships.forEach((ship) => {
             let placed = false;
             while (!placed) {
-                const x = Math.floor(Math.random() * 10);
-                const y = Math.floor(Math.random() * 10);
+                const randCoord = this.getRandMove();
                 const direction = Math.random() < 0.5 ? "horizontal" : "vertical";
                 try {
-                    this.placeShip(ship, x, y, direction);
+                    this.placeShip(ship, randCoord.x, randCoord.y, direction);
                     placed = true;
                 } catch (error) {}
             }
         });
+    }
+
+    getRandMove() {
+        const x = Math.floor(Math.random() * this.size);
+        const y = Math.floor(Math.random() * this.size);
+        return { x, y };
     }
 
     isOutOfBounds(length, axis) {

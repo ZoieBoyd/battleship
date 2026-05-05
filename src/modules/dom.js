@@ -1,15 +1,7 @@
-import { Player } from "./player";
-
 const mainContentArea = document.querySelector("main");
 
 export function loadGameScreen(player, enemy) {
     renderGameScreen();
-    /*
-    const player = new Player();
-    const enemy = new Player();
-    */
-    enemy.gameboard.placeRandomFleet();
-    player.gameboard.placeRandomFleet();
     renderGameBoard("player-gameboard", player.gameboard, false);
     renderGameBoard("cpu-gameboard", enemy.gameboard);
 }
@@ -59,8 +51,8 @@ export function renderGameBoard(id, gameboard, isEditable = true) {
     const gameboardDiv = document.querySelector("#" + id);
     gameboardDiv.replaceChildren();
 
-    for (let i = 0; i < 10; i++) {
-        for (let j = 0; j < 10; j++) {
+    for (let i = 0; i < gameboard.size; i++) {
+        for (let j = 0; j < gameboard.size; j++) {
             const cell = document.createElement("button");
             cell.classList.add("cell");
             if (!isEditable) {
