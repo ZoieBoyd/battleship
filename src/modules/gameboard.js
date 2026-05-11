@@ -73,6 +73,10 @@ export class Gameboard {
         return axis + (length - 1) >= this.size;
     }
 
+    isMoveInBounds(coords) {
+        return coords.every((coord) => coord >= 0 && coord < this.size);
+    }
+
     isOccupied(x, y) {
         return this.board[x][y] !== null;
     }
@@ -88,6 +92,13 @@ export class Gameboard {
 
     isHit(x, y) {
         return this.board[x][y] != null;
+    }
+
+    hasBeenAttacked(x, y) {
+        return (
+            this.hits.some((coord) => coord[0] === x && coord[1] === y) ||
+            this.misses.some((coord) => coord[0] === x && coord[1] === y)
+        );
     }
 
     isAllSunk() {

@@ -1,22 +1,86 @@
 import { loadGameScreen } from "./dom";
 import { Player } from "./player";
 
-export function playGame() {
-    const player = new Player();
-    const enemy = new Player();
-    let currentPlayer = player; // player's turn first
+const player = new Player();
+const enemy = new Player();
+let isPlayerTurn = true;
+let enemyTargets = new Array();
+let currentEnemyHits = new Array();
 
+export function playGame() {
     player.gameboard.placeRandomFleet();
     enemy.gameboard.placeRandomFleet();
 
-    loadGameScreen(player, enemy);
-
-    // while (!isWinner(player, enemy)) {
-    // play game
-    //}
-    // display winner screen
+    loadGameScreen(player, enemy, isPlayerTurn);
 }
 
-function isWinner(p1, p2) {
-    return p1.gameboard.isAllSunk() || p2.gameboard.isAllSunk();
+export function handlePlayerMove(x, y) {
+    if (!isPlayerTurn) return;
+
+    enemy.gameboard.receiveAttack(x, y);
+
+    isPlayerTurn = false;
+    loadGameScreen(player, enemy, isPlayerTurn);
+
+    if (enemy.gameboard.isAllSunk()) {
+        console.log("Player wins!");
+        return;
+    } else {
+        setTimeout(handleEnemyMove, 500);
+    }
+}
+
+function handleEnemyMove() {
+    if (enemyTargets.length === 0) {
+        let randMove = player.gameboard.getRandMove();
+        while (player.gameboard.hasBeenAttacked(randMove.x, randMove.y)) {
+            randMove = player.gameboard.getRandMove();
+        }
+        player.gameboard.receiveAttack(randMove.x, randMove.y);
+        if (player.gameboard.isHit(randMove.x, randMove.y)) {
+            currentEnemyHits.push([randMove.x, randMove.y]);
+            enemyTargets.unshift(
+                [randMove.x - 1, randMove.y],
+                [randMove.x + 1, randMove.y],
+                [randMove.x, randMove.y - 1],
+                [randMove.x, randMove.y + 1],
+            );
+        }
+    } else {
+        let attack = enemyTargets.shift();
+        while (player.gameboard.hasBeenAttacked(attack[0], attack[1])) {
+            attack = enemyTargets.shift();
+        }
+        player.gameboard.receiveAttack(attack[0], attack[1]);
+        if (player.gameboard.isHit(attack[0], attack[1])) {
+            currentEnemyHits.push([attack[0], attack[1]]);
+            if (player.gameboard.board[attack[0]][attack[1]].isSunk()) {
+                enemyTargets = [];
+                currentEnemyHits = [];
+            } else {
+                if (currentEnemyHits[0][0] === attack[0]) {
+                    const left = [attack[0], attack[1] - 1];
+                    const right = [attack[0], attack[1] + 1];
+
+                    if (player.gameboard.isMoveInBounds(left)) enemyTargets.unshift(left);
+                    if (player.gameboard.isMoveInBounds(right)) enemyTargets.unshift(right);
+                } else {
+                    const up = [attack[0] - 1, attack[1]];
+                    const down = [attack[0] + 1, attack[1]];
+
+                    if (player.gameboard.isMoveInBounds(up)) enemyTargets.unshift(up);
+                    if (player.gameboard.isMoveInBounds(down)) enemyTargets.unshift(down);
+                }
+            }
+        }
+    }
+
+    loadGameScreen(player, enemy, isPlayerTurn);
+
+    if (player.gameboard.isAllSunk()) {
+        console.log("Enemy wins!");
+        return;
+    }
+
+    isPlayerTurn = true;
 }

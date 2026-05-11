@@ -141,10 +141,10 @@ p {
     color: var(--red);
 }
 
-.sunk {
-    background-color: var(--red);
-}
-
 .ship {
     background-color: rgb(83, 83, 83);
+}
+
+.sunk {
+    background-color: var(--red);
 }

@@ -1,9 +1,12 @@
+import { handlePlayerMove } from "./gameController";
+
 const mainContentArea = document.querySelector("main");
 
-export function loadGameScreen(player, enemy) {
+export function loadGameScreen(player, enemy, isPlayerTurn) {
     renderGameScreen();
+
     renderGameBoard("player-gameboard", player.gameboard, false);
-    renderGameBoard("cpu-gameboard", enemy.gameboard);
+    renderGameBoard("cpu-gameboard", enemy.gameboard, true);
 }
 
 function renderGameScreen() {
@@ -23,13 +26,46 @@ function renderGameScreen() {
     enemyGameboard.className = "gameboard";
     enemyGameboard.id = "cpu-gameboard";
 
-    mainContentArea.append(playerTitle, playerGameboard, enemyTitle, enemyGameboard);
+    mainContentArea.replaceChildren(playerTitle, playerGameboard, enemyTitle, enemyGameboard);
 }
 
-export function loadSetupScreen() {
+export function renderGameBoard(id, gameboard, isEditable = true) {
+    const gameboardDiv = document.querySelector("#" + id);
+    gameboardDiv.replaceChildren();
+
+    for (let i = 0; i < gameboard.size; i++) {
+        for (let j = 0; j < gameboard.size; j++) {
+            const cell = document.createElement("button");
+            cell.classList.add("cell");
+
+            if (!isEditable) {
+                if (gameboard.board[i][j] != null) {
+                    cell.classList.add("ship");
+                }
+            }
+            if (gameboard.board[i][j] != null && gameboard.board[i][j].isSunk()) {
+                cell.classList.add("sunk");
+            } else if (gameboard.misses.some(([x, y]) => x === i && y === j)) {
+                cell.classList.add("miss");
+            } else if (gameboard.hits.some(([x, y]) => x === i && y === j)) {
+                cell.classList.add("hit");
+            } else if (isEditable) {
+                cell.classList.add("editable");
+
+                cell.addEventListener("click", () => {
+                    handlePlayerMove(i, j);
+                });
+            }
+            gameboardDiv.appendChild(cell);
+        }
+    }
+}
+
+/*export function loadSetupScreen() {
     renderSetupScreen();
     renderGameBoard("setup-gameboard");
 }
+*/
 
 export function renderSetupScreen() {
     mainContentArea.className = "setup-screen";
@@ -45,37 +81,4 @@ export function renderSetupScreen() {
     setupGameboard.id = "setup-gameboard";
 
     mainContentArea.append(title, tip, setupGameboard);
-}
-
-export function renderGameBoard(id, gameboard, isEditable = true) {
-    const gameboardDiv = document.querySelector("#" + id);
-    gameboardDiv.replaceChildren();
-
-    for (let i = 0; i < gameboard.size; i++) {
-        for (let j = 0; j < gameboard.size; j++) {
-            const cell = document.createElement("button");
-            cell.classList.add("cell");
-            if (!isEditable) {
-                if (gameboard.board[i][j] != null) {
-                    cell.classList.add("ship");
-                }
-            }
-            if (gameboard.board[i][j] != null && gameboard.board[i][j].isSunk()) {
-                cell.classList.add("sunk");
-            } else if (gameboard.misses.some(([x, y]) => x === i && y === j)) {
-                cell.classList.add("miss");
-            } else if (gameboard.hits.some(([x, y]) => x === i && y === j)) {
-                cell.classList.add("hit");
-            } else if (isEditable) {
-                cell.classList.add("editable");
-                cell.addEventListener("click", () => {
-                    cell.classList.remove("editable");
-                    gameboard.receiveAttack(i, j);
-                    renderGameBoard(id, gameboard, isEditable);
-                    // if (gameboard.isAllSunk()) console.log("yayyyy");
-                });
-            }
-            gameboardDiv.appendChild(cell);
-        }
-    }
 }

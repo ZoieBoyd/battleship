@@ -68,4 +68,14 @@ describe("Testing attack functionality", () => {
         });
         expect(board.isAllSunk()).toBeTruthy();
     });
+
+    test("Returns false for out of bounds coordinates", () => {
+        const board = new Gameboard();
+        expect(board.isMoveInBounds([10, 1])).toBeFalsy();
+    });
+
+    test("Returns true for in bounds coordinates", () => {
+        const board = new Gameboard();
+        expect(board.isMoveInBounds([3, 7])).toBeTruthy();
+    });
 });
