@@ -1,13 +1,19 @@
-import { loadGameScreen } from "./dom";
+import { loadGameScreen, renderGameOverScreen } from "./dom";
 import { Player } from "./player";
 
-const player = new Player();
-const enemy = new Player();
-let isPlayerTurn = true;
-let enemyTargets = new Array();
-let currentEnemyHits = new Array();
+let player;
+let enemy;
+let isPlayerTurn;
+let enemyTargets;
+let currentEnemyHits;
 
-export function playGame() {
+export function initialiseGame() {
+    player = new Player();
+    enemy = new Player();
+    isPlayerTurn = true;
+    enemyTargets = [];
+    currentEnemyHits = [];
+
     player.gameboard.placeRandomFleet();
     enemy.gameboard.placeRandomFleet();
 
@@ -23,8 +29,7 @@ export function handlePlayerMove(x, y) {
     loadGameScreen(player, enemy, isPlayerTurn);
 
     if (enemy.gameboard.isAllSunk()) {
-        console.log("Player wins!");
-        return;
+        setTimeout(() => renderGameOverScreen(true), 500);
     } else {
         setTimeout(handleEnemyMove, 500);
     }
@@ -75,12 +80,10 @@ function handleEnemyMove() {
         }
     }
 
+    isPlayerTurn = true;
     loadGameScreen(player, enemy, isPlayerTurn);
 
     if (player.gameboard.isAllSunk()) {
-        console.log("Enemy wins!");
-        return;
+        setTimeout(() => renderGameOverScreen(false), 500);
     }
-
-    isPlayerTurn = true;
 }

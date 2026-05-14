@@ -40,7 +40,7 @@ export class Gameboard {
                 throw new Error("Invalid direction");
         }
 
-        if (shipCoords.some(([coordX, coordY]) => this.isOccupied(coordX, coordY))) {
+        if (shipCoords.some(([coordX, coordY]) => !this.isValidPlacement(coordX, coordY))) {
             throw new Error("Space is occupied");
         }
 
@@ -79,6 +79,18 @@ export class Gameboard {
 
     isOccupied(x, y) {
         return this.board[x][y] !== null;
+    }
+
+    isValidPlacement(x, y) {
+        // A placement is valid only if the cell does not have a ship on it or does not have a ship directly next to it
+        for (let offsetX = -1; offsetX <= 1; offsetX++) {
+            for (let offsetY = -1; offsetY <= 1; offsetY++) {
+                if (this.isMoveInBounds([offsetX + x, offsetY + y])) {
+                    if (this.isOccupied(offsetX + x, offsetY + y)) return false;
+                }
+            }
+        }
+        return true;
     }
 
     receiveAttack(x, y) {

@@ -37,9 +37,11 @@
 body {
     max-width: 100vw;
     max-height: 100vh;
+    min-height: 95vh;
     background-color: var(--navy);
     display: grid;
     justify-content: center;
+    align-content: center;
     text-align: center;
 }
 
@@ -147,4 +149,28 @@ p {
 
 .sunk {
     background-color: var(--red);
+}
+
+.img-btn {
+    background-color: transparent;
+    border: none;
+    width: fit-content;
+    height: fit-content;
+}
+
+.img-btn:hover {
+    filter: brightness(0.6);
+}
+
+.game-over-screen {
+    background-color: transparent;
+    justify-items: center;
+    font-family: "ITC Machine Std", Impact, sans-serif;
+    font-size: 6rem;
+    color: var(--red);
+    -webkit-text-stroke: 4px var(--white);
+}
+
+body:has(main.game-over-screen) header {
+    display: none;
 }

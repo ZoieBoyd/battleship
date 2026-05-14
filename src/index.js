@@ -1,4 +1,4 @@
 import "./styles.css";
-import { playGame } from "./modules/gameController";
+import { initialiseGame } from "./modules/gameController";
 
-playGame();
+initialiseGame();

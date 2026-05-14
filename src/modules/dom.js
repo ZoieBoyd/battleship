@@ -1,6 +1,8 @@
-import { handlePlayerMove } from "./gameController";
+import { handlePlayerMove, initialiseGame } from "./gameController";
+import replayImage from "../images/replay.svg";
 
 const mainContentArea = document.querySelector("main");
+const body = document.querySelector("body");
 
 export function loadGameScreen(player, enemy, isPlayerTurn) {
     renderGameScreen();
@@ -81,4 +83,20 @@ export function renderSetupScreen() {
     setupGameboard.id = "setup-gameboard";
 
     mainContentArea.append(title, tip, setupGameboard);
+}
+
+export function renderGameOverScreen(isWinner) {
+    mainContentArea.className = "game-over-screen";
+
+    const text = document.createElement("h1");
+    text.textContent = isWinner ? "Victory" : "Defeat";
+
+    const replayBtn = document.createElement("button");
+    const replayBtnImg = document.createElement("img");
+    replayBtnImg.src = replayImage;
+    replayBtn.className = "img-btn";
+    replayBtn.appendChild(replayBtnImg);
+    replayBtn.addEventListener("click", () => initialiseGame());
+
+    mainContentArea.replaceChildren(text, replayBtn);
 }
