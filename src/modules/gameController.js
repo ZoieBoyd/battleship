@@ -44,11 +44,15 @@ function handleEnemyMove() {
         player.gameboard.receiveAttack(randMove.x, randMove.y);
         if (player.gameboard.isHit(randMove.x, randMove.y)) {
             currentEnemyHits.push([randMove.x, randMove.y]);
-            enemyTargets.unshift(
+
+            const potentialMoves = [
                 [randMove.x - 1, randMove.y],
                 [randMove.x + 1, randMove.y],
                 [randMove.x, randMove.y - 1],
                 [randMove.x, randMove.y + 1],
+            ];
+            enemyTargets.unshift(
+                ...potentialMoves.filter((coords) => player.gameboard.isMoveInBounds(coords)),
             );
         }
     } else {
@@ -64,17 +68,29 @@ function handleEnemyMove() {
                 currentEnemyHits = [];
             } else {
                 if (currentEnemyHits[0][0] === attack[0]) {
-                    const left = [attack[0], attack[1] - 1];
-                    const right = [attack[0], attack[1] + 1];
+                    // horizontal
+                    const potentialMoves = [
+                        [attack[0], attack[1] - 1], // left
+                        [attack[0], attack[1] + 1], // right
+                    ];
 
-                    if (player.gameboard.isMoveInBounds(left)) enemyTargets.unshift(left);
-                    if (player.gameboard.isMoveInBounds(right)) enemyTargets.unshift(right);
+                    enemyTargets.unshift(
+                        ...potentialMoves.filter((coords) =>
+                            player.gameboard.isMoveInBounds(coords),
+                        ),
+                    );
                 } else {
-                    const up = [attack[0] - 1, attack[1]];
-                    const down = [attack[0] + 1, attack[1]];
+                    // vertical
+                    const potentialMoves = [
+                        [attack[0] - 1, attack[1]], // up
+                        [attack[0] + 1, attack[1]], // down
+                    ];
 
-                    if (player.gameboard.isMoveInBounds(up)) enemyTargets.unshift(up);
-                    if (player.gameboard.isMoveInBounds(down)) enemyTargets.unshift(down);
+                    enemyTargets.unshift(
+                        ...potentialMoves.filter((coords) =>
+                            player.gameboard.isMoveInBounds(coords),
+                        ),
+                    );
                 }
             }
         }
