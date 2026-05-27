@@ -1,4 +1,4 @@
-import { loadGameScreen, renderGameOverScreen } from "./dom";
+import { loadGameScreen, loadSetupScreen, renderGameOverScreen, renderSetupScreen } from "./dom";
 import { Player } from "./player";
 
 let player;
@@ -7,14 +7,17 @@ let isPlayerTurn;
 let enemyTargets;
 let currentEnemyHits;
 
-export function initialiseGame() {
+export function setupGame() {
     player = new Player();
+    loadSetupScreen(player);
+}
+
+export function initialiseGame() {
     enemy = new Player();
     isPlayerTurn = true;
     enemyTargets = [];
     currentEnemyHits = [];
 
-    player.gameboard.placeRandomFleet();
     enemy.gameboard.placeRandomFleet();
 
     loadGameScreen(player, enemy, isPlayerTurn);
@@ -101,5 +104,19 @@ function handleEnemyMove() {
 
     if (player.gameboard.isAllSunk()) {
         setTimeout(() => renderGameOverScreen(false), 500);
+    }
+}
+
+export function handlePlaceShip(x, y, orientation) {
+    player.gameboard.placeShip(
+        player.gameboard.ships[player.gameboard.numberOfShipsPlaced()],
+        x,
+        y,
+        orientation,
+    );
+    if (player.gameboard.numberOfShipsPlaced() < 5) {
+        loadSetupScreen(player);
+    } else {
+        initialiseGame();
     }
 }

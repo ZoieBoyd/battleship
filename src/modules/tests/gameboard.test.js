@@ -78,4 +78,11 @@ describe("Testing attack functionality", () => {
         const board = new Gameboard();
         expect(board.isMoveInBounds([3, 7])).toBeTruthy();
     });
+
+    test("Returns number of ships currently placed on the gameboard after placing 2 ships", () => {
+        const board = new Gameboard();
+        board.placeShip(new Ship(5, "submarine"), 1, 1, "horizontal");
+        board.placeShip(new Ship(4, "battleship"), 4, 4, "vertical");
+        expect(board.numberOfShipsPlaced()).toBe(2);
+    });
 });

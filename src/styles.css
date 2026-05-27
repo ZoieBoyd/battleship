@@ -95,6 +95,13 @@ main.game-screen {
     cursor: crosshair;
 }
 
+.cell.valid:not(.ship) {
+    border: 4px solid var(--blue);
+}
+.cell.invalid:not(.ship) {
+    border: 4px solid var(--red);
+}
+
 #player-header {
     grid-area: player-header;
 }

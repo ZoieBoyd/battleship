@@ -16,37 +16,45 @@ export class Gameboard {
     }
 
     placeShip(ship, x, y, direction) {
+        const shipCoords = this.calculateShipCoords(ship, x, y, direction);
+
+        if (this.isValidShipCoords(shipCoords)) {
+            shipCoords.forEach(([coordX, coordY]) => {
+                this.board[coordX][coordY] = ship;
+            });
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    calculateShipCoords(ship, x, y, direction) {
         const shipCoords = new Array();
+
         switch (direction) {
             case "horizontal":
-                if (this.isOutOfBounds(ship.length, y)) {
-                    throw new Error("Invalid Placement");
-                }
                 for (let i = 0; i < ship.length; i++) {
                     shipCoords.push([x, y + i]);
                 }
                 break;
-
             case "vertical":
-                if (this.isOutOfBounds(ship.length, x)) {
-                    throw new Error("Invalid Placement");
-                }
                 for (let i = 0; i < ship.length; i++) {
                     shipCoords.push([x + i, y]);
                 }
                 break;
-
             default:
                 throw new Error("Invalid direction");
         }
 
-        if (shipCoords.some(([coordX, coordY]) => !this.isValidPlacement(coordX, coordY))) {
-            throw new Error("Space is occupied");
-        }
+        return shipCoords;
+    }
 
-        shipCoords.forEach(([coordX, coordY]) => {
-            this.board[coordX][coordY] = ship;
-        });
+    isValidShipCoords(coords) {
+        for (const coord of coords) {
+            if (!this.isMoveInBounds(coord)) return false;
+            if (!this.isValidPlacement(coord[0], coord[1])) return false;
+        }
+        return true;
     }
 
     placeRandomFleet() {
@@ -55,10 +63,7 @@ export class Gameboard {
             while (!placed) {
                 const randCoord = this.getRandMove();
                 const direction = Math.random() < 0.5 ? "horizontal" : "vertical";
-                try {
-                    this.placeShip(ship, randCoord.x, randCoord.y, direction);
-                    placed = true;
-                } catch (error) {}
+                placed = this.placeShip(ship, randCoord.x, randCoord.y, direction);
             }
         });
     }
@@ -115,5 +120,9 @@ export class Gameboard {
 
     isAllSunk() {
         return this.ships.every((ship) => ship.isSunk());
+    }
+
+    numberOfShipsPlaced() {
+        return new Set(this.board.flat().filter((element) => element != null)).size;
     }
 }
