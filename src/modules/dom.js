@@ -4,6 +4,11 @@ import replayImage from "../images/replay.svg";
 const mainContentArea = document.querySelector("main");
 const body = document.querySelector("body");
 
+const explosionAudio = document.querySelector("#explosion-audio");
+explosionAudio.volume = 0.1;
+
+const bubblesAudio = document.querySelector("#bubbles-audio");
+
 if (mainContentArea.classList.contains("setup-screen")) {
 }
 let currentOrientation = "horizontal";
@@ -149,4 +154,14 @@ export function renderGameOverScreen(isWinner) {
     replayBtn.addEventListener("click", () => setupGame());
 
     mainContentArea.replaceChildren(text, replayBtn);
+}
+
+export function playExplosionSFX() {
+    explosionAudio.currentTime = 0;
+    explosionAudio.play();
+}
+
+export function playSinkingSFX() {
+    bubblesAudio.currentTime = 0;
+    bubblesAudio.play();
 }
