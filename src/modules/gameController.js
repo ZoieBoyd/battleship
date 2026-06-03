@@ -135,9 +135,20 @@ export function handlePlaceShip(x, y, orientation) {
         y,
         orientation,
     );
-    if (player.gameboard.numberOfShipsPlaced() < 5) {
-        loadSetupScreen(player);
-    } else {
-        initialiseGame();
-    }
+    // if (player.gameboard.numberOfShipsPlaced() < 5) {
+    loadSetupScreen(player);
+    // } else {
+    //   initialiseGame();
+    //}
+}
+
+export function handleRandomiseFleet() {
+    player.gameboard.clear();
+    player.gameboard.placeRandomFleet();
+    loadSetupScreen(player);
+}
+
+export function handleClearBoard() {
+    player.gameboard.clear();
+    loadSetupScreen(player);
 }

@@ -88,6 +88,7 @@ main.game-screen {
     border: none;
     background-color: var(--grey);
     font-size: 6rem;
+    transition: 0.2s;
 }
 
 .cell.editable:hover {
@@ -180,4 +181,43 @@ p {
 
 body:has(main.game-over-screen) header {
     display: none;
+}
+
+.setup-screen {
+    grid-template-areas:
+        ". title buttons"
+        ". tip buttons"
+        ". gameboard ."
+        ". gameboard start";
+
+    grid-template-columns: 1fr 3fr 1fr;
+    column-gap: 1rem;
+}
+
+.setup-screen > div > button.img-btn > img {
+    width: 3.25rem;
+}
+
+.setup-screen > #btn-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.setup-screen > #btn-container,
+.setup-screen > button {
+    justify-self: end;
+}
+
+.setup-screen > button {
+    background-color: var(--navy);
+    color: var(--white);
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    font-size: 1.5rem;
+    font-family: "Orbitron";
+}
+
+.setup-screen > button:hover {
+    filter: brightness(0.85);
 }

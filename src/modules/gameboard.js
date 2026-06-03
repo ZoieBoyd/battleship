@@ -125,4 +125,8 @@ export class Gameboard {
     numberOfShipsPlaced() {
         return new Set(this.board.flat().filter((element) => element != null)).size;
     }
+
+    clear() {
+        this.board = new Array(this.size).fill(null).map(() => new Array(this.size).fill(null));
+    }
 }

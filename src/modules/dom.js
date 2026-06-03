@@ -1,5 +1,13 @@
-import { handlePlayerMove, initialiseGame, handlePlaceShip, setupGame } from "./gameController";
+import {
+    handlePlayerMove,
+    initialiseGame,
+    handlePlaceShip,
+    setupGame,
+    handleRandomiseFleet,
+    handleClearBoard,
+} from "./gameController";
 import replayImage from "../images/replay.svg";
+import randomImage from "../images/dice.svg";
 
 const mainContentArea = document.querySelector("main");
 const body = document.querySelector("body");
@@ -61,20 +69,17 @@ export function renderGameBoard(id, gameboard, isEditable = true) {
                     cell.classList.add("ship");
                 }
             }
-
-            cell.classList.add("editable");
             if (gameboardDiv.id === "setup-gameboard") {
+                const ship = gameboard.ships[gameboard.numberOfShipsPlaced()];
                 cell.addEventListener("click", () => {
+                    if (!ship) return;
                     handlePlaceShip(i, j, currentOrientation);
                 });
 
                 cell.addEventListener("mouseenter", () => {
-                    let shipCells = gameboard.calculateShipCoords(
-                        gameboard.ships[gameboard.numberOfShipsPlaced()],
-                        i,
-                        j,
-                        currentOrientation,
-                    );
+                    if (!ship) return;
+
+                    let shipCells = gameboard.calculateShipCoords(ship, i, j, currentOrientation);
 
                     const isValid = gameboard.isValidShipCoords(shipCells);
 
@@ -120,24 +125,52 @@ export function renderGameBoard(id, gameboard, isEditable = true) {
 }
 
 export function loadSetupScreen(player) {
-    renderSetupScreen();
+    renderSetupScreen(player.gameboard);
     renderGameBoard("setup-gameboard", player.gameboard, false);
 }
 
-export function renderSetupScreen() {
+export function renderSetupScreen(gameboard) {
     mainContentArea.className = "setup-screen";
 
     const title = document.createElement("h2");
     title.textContent = "Place your fleet";
+    title.style.gridArea = "title";
+
+    const randomBtn = document.createElement("button");
+    const randomImg = document.createElement("img");
+    randomImg.src = randomImage;
+    randomBtn.appendChild(randomImg);
+    randomBtn.className = "img-btn";
+    randomBtn.addEventListener("click", () => handleRandomiseFleet());
+
+    const clearBtn = document.createElement("button");
+    const clearImg = document.createElement("img");
+    clearImg.src = replayImage;
+    clearBtn.appendChild(clearImg);
+    clearBtn.className = "img-btn";
+    clearBtn.addEventListener("click", () => handleClearBoard());
+
+    const btnContainer = document.createElement("div");
+    btnContainer.append(randomBtn, clearBtn);
+    btnContainer.id = "btn-container";
+    btnContainer.style.gridArea = "buttons";
 
     const tip = document.createElement("p");
     tip.textContent = 'Tip: Press "R" to rotate';
+    tip.style.gridArea = "tip";
 
     const setupGameboard = document.createElement("div");
     setupGameboard.className = "gameboard";
     setupGameboard.id = "setup-gameboard";
+    setupGameboard.style.gridArea = "gameboard";
 
-    mainContentArea.replaceChildren(title, tip, setupGameboard);
+    const startBtn = document.createElement("button");
+    startBtn.textContent = "Start";
+    startBtn.style.gridArea = "start";
+    startBtn.style.display = gameboard.numberOfShipsPlaced() < 5 ? "none" : "block";
+    startBtn.addEventListener("click", () => initialiseGame());
+
+    mainContentArea.replaceChildren(title, btnContainer, tip, setupGameboard, startBtn);
 }
 
 export function renderGameOverScreen(isWinner) {
