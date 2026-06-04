@@ -5,6 +5,7 @@ import {
     setupGame,
     handleRandomiseFleet,
     handleClearBoard,
+    handleRemoveShip,
 } from "./gameController";
 import replayImage from "../images/replay.svg";
 import randomImage from "../images/dice.svg";
@@ -70,10 +71,14 @@ export function renderGameBoard(id, gameboard, isEditable = true) {
                 }
             }
             if (gameboardDiv.id === "setup-gameboard") {
-                const ship = gameboard.ships[gameboard.numberOfShipsPlaced()];
+                const ship = gameboard.getNextShip();
                 cell.addEventListener("click", () => {
                     if (!ship) return;
                     handlePlaceShip(i, j, currentOrientation);
+                });
+
+                cell.addEventListener("contextmenu", () => {
+                    handleRemoveShip(i, j);
                 });
 
                 cell.addEventListener("mouseenter", () => {

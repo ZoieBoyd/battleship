@@ -28,6 +28,17 @@ export class Gameboard {
         return true;
     }
 
+    removeShip(x, y) {
+        const ship = this.board[x][y];
+        for (let i = 0; i < this.size; i++) {
+            for (let j = 0; j < this.size; j++) {
+                if (this.board[i][j] === ship) {
+                    this.board[i][j] = null;
+                }
+            }
+        }
+    }
+
     calculateShipCoords(ship, x, y, direction) {
         const shipCoords = new Array();
 
@@ -128,5 +139,9 @@ export class Gameboard {
 
     clear() {
         this.board = new Array(this.size).fill(null).map(() => new Array(this.size).fill(null));
+    }
+
+    getNextShip() {
+        return this.ships.find((ship) => !this.board.flat().includes(ship));
     }
 }

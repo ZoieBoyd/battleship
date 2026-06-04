@@ -129,17 +129,15 @@ function huntMode() {
 }
 
 export function handlePlaceShip(x, y, orientation) {
-    player.gameboard.placeShip(
-        player.gameboard.ships[player.gameboard.numberOfShipsPlaced()],
-        x,
-        y,
-        orientation,
-    );
-    // if (player.gameboard.numberOfShipsPlaced() < 5) {
+    player.gameboard.placeShip(player.gameboard.getNextShip(), x, y, orientation);
     loadSetupScreen(player);
-    // } else {
-    //   initialiseGame();
-    //}
+}
+
+export function handleRemoveShip(x, y) {
+    if (player.gameboard.isHit(x, y)) {
+        player.gameboard.removeShip(x, y);
+        loadSetupScreen(player);
+    }
 }
 
 export function handleRandomiseFleet() {
