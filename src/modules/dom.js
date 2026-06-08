@@ -60,71 +60,96 @@ export function renderGameBoard(id, gameboard, isEditable = true) {
 
     for (let i = 0; i < gameboard.size; i++) {
         for (let j = 0; j < gameboard.size; j++) {
-            const cell = document.createElement("button");
-            cell.classList.add("cell");
-            cell.setAttribute("data-x", i);
-            cell.setAttribute("data-y", j);
+            const cell = createGridCell(i, j);
 
             if (!isEditable) {
                 if (gameboard.board[i][j] != null) {
                     cell.classList.add("ship");
                 }
             }
+
             if (gameboardDiv.id === "setup-gameboard") {
-                const ship = gameboard.getNextShip();
-                cell.addEventListener("click", () => {
-                    if (!ship) return;
-                    handlePlaceShip(i, j, currentOrientation);
-                });
-
-                cell.addEventListener("contextmenu", () => {
-                    handleRemoveShip(i, j);
-                });
-
-                cell.addEventListener("mouseenter", () => {
-                    if (!ship) return;
-
-                    let shipCells = gameboard.calculateShipCoords(ship, i, j, currentOrientation);
-
-                    const isValid = gameboard.isValidShipCoords(shipCells);
-
-                    shipCells = shipCells.filter((coord) => gameboard.isMoveInBounds(coord));
-                    for (const shipCell of shipCells) {
-                        const cellBtn = document.querySelector(
-                            `[data-x = "${shipCell[0]}"][data-y ="${shipCell[1]}"]`,
-                        );
-
-                        if (isValid) {
-                            cellBtn.classList.add("valid");
-                        } else {
-                            cellBtn.classList.add("invalid");
-                        }
-                    }
-                });
-
-                cell.addEventListener("mouseleave", () => {
-                    const validatedCells = gameboardDiv.querySelectorAll(".valid, .invalid");
-                    for (const validatedCell of validatedCells) {
-                        validatedCell.classList.remove("valid", "invalid");
-                    }
-                });
+                enableSetupCellEvents(cell, gameboard, i, j);
             } else {
-                if (gameboard.board[i][j] != null && gameboard.board[i][j].isSunk()) {
-                    cell.classList.add("sunk");
-                } else if (gameboard.misses.some(([x, y]) => x === i && y === j)) {
-                    cell.classList.add("miss");
-                } else if (gameboard.hits.some(([x, y]) => x === i && y === j)) {
-                    cell.classList.add("hit");
-                } else if (isEditable) {
-                    cell.classList.add("editable");
-
-                    cell.addEventListener("click", () => {
-                        handlePlayerMove(i, j);
-                    });
-                }
+                enableGameplayCellEvents(cell, gameboard, i, j, isEditable);
             }
 
             gameboardDiv.appendChild(cell);
+        }
+    }
+}
+
+function createGridCell(x, y) {
+    const cell = document.createElement("button");
+    cell.classList.add("cell");
+    cell.setAttribute("data-x", x);
+    cell.setAttribute("data-y", y);
+
+    return cell;
+}
+
+function enableSetupCellEvents(cell, gameboard, x, y) {
+    const ship = gameboard.getNextShip();
+
+    cell.addEventListener("click", () => {
+        if (!ship) return;
+        handlePlaceShip(x, y, currentOrientation);
+    });
+
+    cell.addEventListener("contextmenu", () => {
+        handleRemoveShip(x, y);
+    });
+
+    cell.addEventListener("mouseenter", () => {
+        onSetupCellHover(cell, gameboard, x, y, true);
+    });
+
+    cell.addEventListener("mouseleave", () => {
+        onSetupCellHover(cell, gameboard, x, y, false);
+    });
+}
+
+function enableGameplayCellEvents(cell, gameboard, x, y, isEditable) {
+    if (gameboard.board[x][y] !== null && gameboard.board[x][y].isSunk()) {
+        cell.classList.add("sunk");
+    } else if (gameboard.misses.some(([boardX, boardY]) => boardX === x && boardY === y)) {
+        cell.classList.add("miss");
+    } else if (gameboard.hits.some(([boardX, boardY]) => boardX === x && boardY === y)) {
+        cell.classList.add("hit");
+    } else if (isEditable) {
+        cell.classList.add("editable");
+
+        cell.addEventListener("click", () => {
+            handlePlayerMove(x, y);
+        });
+    }
+}
+
+function onSetupCellHover(cell, gameboard, x, y, isEntering) {
+    const ship = gameboard.getNextShip();
+    if (!ship) return;
+
+    if (isEntering) {
+        let shipCells = gameboard.calculateShipCoords(ship, x, y, currentOrientation);
+
+        const isValid = gameboard.isValidShipCoords(shipCells);
+
+        shipCells = shipCells.filter((coord) => gameboard.isMoveInBounds(coord));
+        for (const shipCell of shipCells) {
+            const cellBtn = document.querySelector(
+                `[data-x = "${shipCell[0]}"][data-y ="${shipCell[1]}"]`,
+            );
+
+            if (isValid) {
+                cellBtn.classList.add("valid");
+            } else {
+                cellBtn.classList.add("invalid");
+            }
+        }
+    } else {
+        const validatedCells = cell.parentElement.querySelectorAll(".valid, .invalid");
+        for (const validatedCell of validatedCells) {
+            validatedCell.classList.remove("valid", "invalid");
         }
     }
 }
