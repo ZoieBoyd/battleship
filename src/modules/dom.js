@@ -9,6 +9,8 @@ import {
 } from "./gameController";
 import replayImage from "../images/replay.svg";
 import randomImage from "../images/dice.svg";
+import lmbImage from "../images/lmb.svg";
+import rmbImage from "../images/rmb.svg";
 
 const mainContentArea = document.querySelector("main");
 const body = document.querySelector("body");
@@ -185,9 +187,32 @@ export function renderSetupScreen(gameboard) {
     btnContainer.id = "btn-container";
     btnContainer.style.gridArea = "buttons";
 
-    const tip = document.createElement("p");
-    tip.textContent = 'Tip: Press "R" to rotate';
-    tip.style.gridArea = "tip";
+    const lmb = document.createElement("div");
+    const lmbIcon = document.createElement("img");
+    lmbIcon.src = lmbImage;
+    const lmbText = document.createElement("p");
+    lmbText.textContent = "Place";
+    lmb.append(lmbIcon, lmbText);
+
+    const rmb = document.createElement("div");
+    const rmbIcon = document.createElement("img");
+    rmbIcon.src = rmbImage;
+    const rmbText = document.createElement("p");
+    rmbText.textContent = "Remove";
+    rmb.append(rmbIcon, rmbText);
+
+    const rotate = document.createElement("div");
+    const rotateIcon = document.createElement("div");
+    rotateIcon.id = "rotate-icon";
+    rotateIcon.textContent = "R";
+    const rotateText = document.createElement("p");
+    rotateText.textContent = "Rotate";
+    rotate.append(rotateIcon, rotateText);
+
+    const controls = document.createElement("div");
+    controls.id = "controls";
+    controls.style.gridArea = "controls";
+    controls.append(lmb, rmb, rotate);
 
     const setupGameboard = document.createElement("div");
     setupGameboard.className = "gameboard";
@@ -200,7 +225,7 @@ export function renderSetupScreen(gameboard) {
     startBtn.style.display = gameboard.numberOfShipsPlaced() < 5 ? "none" : "block";
     startBtn.addEventListener("click", () => initialiseGame());
 
-    mainContentArea.replaceChildren(title, btnContainer, tip, setupGameboard, startBtn);
+    mainContentArea.replaceChildren(title, btnContainer, controls, setupGameboard, startBtn);
 }
 
 export function renderGameOverScreen(isWinner) {

@@ -127,13 +127,15 @@ h1 {
 
 h2 {
     margin-top: 0;
+    margin-bottom: 0.7rem;
 }
 
 dialog::backdrop {
     background-color: rgba(0, 0, 0, 0.685);
 }
 
-p {
+p,
+#rotate-icon {
     margin: 0;
     font-family: "Poppins", sans-serif;
     letter-spacing: 0;
@@ -187,7 +189,7 @@ body:has(main.game-over-screen) header {
 .setup-screen {
     grid-template-areas:
         ". title buttons"
-        ". tip buttons"
+        ". controls buttons"
         ". gameboard ."
         ". gameboard start";
 
@@ -221,4 +223,28 @@ body:has(main.game-over-screen) header {
 
 .setup-screen > button:hover {
     filter: brightness(0.85);
+}
+
+#controls {
+    justify-self: center;
+    display: flex;
+    gap: 5rem;
+    margin-bottom: 0.5rem;
+}
+
+#controls > div {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#rotate-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    border: 2px solid white;
+    border-radius: 5px;
+    width: 2.2rem;
+    height: 2.2rem;
 }
