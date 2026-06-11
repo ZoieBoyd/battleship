@@ -20,8 +20,6 @@ explosionAudio.volume = 0.1;
 
 const bubblesAudio = document.querySelector("#bubbles-audio");
 
-if (mainContentArea.classList.contains("setup-screen")) {
-}
 let currentOrientation = "horizontal";
 document.addEventListener("keydown", (e) => {
     if (e.key.toLowerCase() === "r") {
